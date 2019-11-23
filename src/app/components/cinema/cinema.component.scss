@@ -1,0 +1,11 @@
+.cinema {
+  padding-top: 70px;
+  display: flex;
+  max-width: 1000px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin: auto;
+  border-top: 3px solid;
+  border-radius: 25%;
+  flex-wrap: wrap;
+}

@@ -1,1 +1,8 @@
-Cinema works!
+Cinema name {{cinemaConfig.name}}
+  <form class="cinema" [formGroup]="(cinemaForm$|async)">
+    <div *ngFor="let rowFormArrayControl of (cinemaForm$|async).get('rows').controls">
+      <app-seat-control *ngFor="let seatControl of rowFormArrayControl.controls"
+                        [formControl]="seatControl"
+                        [seat]="seatControl.value"></app-seat-control>
+    </div>
+  </form>
