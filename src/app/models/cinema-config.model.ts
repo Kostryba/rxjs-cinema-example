@@ -11,6 +11,7 @@ export interface IRowModel {
 
 export interface ISeatModel {
   id: string;
+  row: number;
   position: number;
   selected: boolean;
   occupied: boolean;

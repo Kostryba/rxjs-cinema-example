@@ -8,6 +8,7 @@
   margin: 5px;
   cursor: pointer;
   background: #3cb4e7;
+  user-select: none;
 
   &.selected {
     background: green;

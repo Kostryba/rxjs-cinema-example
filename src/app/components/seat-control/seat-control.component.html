@@ -1,1 +1,5 @@
-<div class="seat-control">{{ seat.position }}</div>
+<div class="seat-control"
+     [ngClass]="{ 'disabled': value.occupied, 'selected': value.selected }"
+     (click)="switchSelection()">
+  {{ value.position }}
+</div>

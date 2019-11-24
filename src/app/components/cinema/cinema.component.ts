@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ICinemaConfigModel, ISeatModel} from '../../models';
+import {ICinemaConfigModel} from '../../models';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
-import {Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, of, Subscription} from 'rxjs';
+import {map, shareReplay, startWith } from 'rxjs/operators';
+import {getSeats, getUniqueId} from '../../utils/utils';
 
 @Component({
   selector: 'app-cinema',
@@ -11,40 +12,42 @@ import {map} from 'rxjs/operators';
 })
 export class CinemaComponent implements OnInit{
   public cinemaConfig: ICinemaConfigModel = {
-    id: this.getUniqueId(),
+    id: getUniqueId(),
     name: 'Super cinema!!!',
     rows: [
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(14),
+        id: getUniqueId(),
+        seats: getSeats(14, 1),
       },
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(16),
+        id: getUniqueId(),
+        seats: getSeats(16, 2),
       },
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(18),
+        id: getUniqueId(),
+        seats: getSeats(18, 3),
       },
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(18),
+        id: getUniqueId(),
+        seats: getSeats(18, 4),
       },
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(18),
+        id: getUniqueId(),
+        seats: getSeats(18, 5),
       },
       {
-        id: this.getUniqueId(),
-        seats: this.getSeats(18),
+        id: getUniqueId(),
+        seats: getSeats(18, 6),
       }
     ],
   };
 
-  public cinemaForm$: Observable<FormGroup>;
+  public cinemaForm: FormGroup;
+  public cinemaFormSubscription: Subscription;
+  public seatsSelected$: Observable<any>;
 
   public ngOnInit(): void {
-    this.cinemaForm$ = of(this.cinemaConfig).pipe(
+    this.cinemaFormSubscription = of(this.cinemaConfig).pipe(
       map( cinemaConfig => {
         return new FormGroup({
           rows: new FormArray(cinemaConfig.rows.map(row => {
@@ -52,24 +55,28 @@ export class CinemaComponent implements OnInit{
           }))
         });
       })
+    ).subscribe(form => {
+      this.cinemaForm = form;
+    });
+
+    this.seatsSelected$ = this.cinemaForm.valueChanges.pipe(
+      map(value => {
+        const seatsSelected = [];
+        value.rows.forEach(row => {
+          row.forEach(seat => {
+            if (seat.selected) {
+              seatsSelected.push(seat);
+            }
+          });
+        });
+       return seatsSelected;
+      }),
+      startWith([]),
+      shareReplay(1),
     );
   }
 
-  private getSeats(quantity: number): ISeatModel[] {
-    const seats = [];
-    for (let i = 1; i <= quantity; i++) {
-      seats.push({
-        id: this.getUniqueId(),
-        position: i,
-        selected: false,
-        occupied: false,
-      });
-    }
-
-    return seats;
-  }
-
-  private getUniqueId() {
-    return Math.random().toString(36).substr(2, 9);
+  public buyTickets() {
+    console.log('hello');
   }
 }

@@ -1,8 +1,22 @@
-Cinema name {{cinemaConfig.name}}
-  <form class="cinema" [formGroup]="(cinemaForm$|async)">
-    <div *ngFor="let rowFormArrayControl of (cinemaForm$|async).get('rows').controls">
-      <app-seat-control *ngFor="let seatControl of rowFormArrayControl.controls"
-                        [formControl]="seatControl"
-                        [seat]="seatControl.value"></app-seat-control>
+<div class="page-container">
+  <div class="info">
+    <h1>Cinema name {{cinemaConfig.name}}</h1>
+    <h1>Selected seats - {{(seatsSelected$|async).length}}</h1>
+    <div *ngIf="(seatsSelected$|async).length !== 0">
+      <div class="selected-seat" *ngFor="let seat of (seatsSelected$|async)">
+        Row: {{ seat.row }}, Seat: {{ seat.position }}
+      </div>
+
+      <button class="confirm-button" (click)="buyTickets()">Buy tickets!!</button>
     </div>
-  </form>
+  </div>
+
+  <div>
+    <form class="cinema" [formGroup]="cinemaForm">
+      <div *ngFor="let rowFormArrayControl of cinemaForm.get('rows').controls">
+        <app-seat-control *ngFor="let seatControl of rowFormArrayControl.controls"
+                          [formControl]="seatControl"></app-seat-control>
+      </div>
+    </form>
+  </div>
+</div>
